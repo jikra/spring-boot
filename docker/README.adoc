@@ -1,0 +1,90 @@
+= Pouziti Dockeru pro vyvoj
+
+== Priprava prostredi (bez CLV privatniho Docker Repository)
+
+Tento krok je nutny pouze pokud jeste nemate pripraveny image 'clv-maven-nexus:3.5.4' ve vasem Dockeru.
+
+Z gitlabu naklonujte repozitar `https://github.com/jikra/docker` na vas souborovy system (idealne mimo tento projekt).
+
+=== Build Java image
+
+* prepnete se do adresare `clv-java/8` v rootu naklonovaneho repozitare
+* provedte build pomoci `docker build -t clv-java:8 .` (nazev tagu a verze je dulezity pro navazujici image)
+
+=== Build zakladniho Maven
+
+* prepnete se do adresare `clv-maven/3.5.4` v rootu naklonovaneho repozitare
+* provedte build pomoci `docker build -t clv-maven:3.5.4 .`
+
+=== Build Maven s napojenim na Nexus
+
+* prepnete se do adresare `clv-maven-nexus/3.5.4` v rootu naklonovaneho repozitare
+* provedte build pomoci `docker build --build-arg USER_PASS=<vase-clv-heslo> --build-arg USER_NAME=<vase-clv-username> -t clv-maven-nexus:3.5.4 .`
+
+=== Volume pro maven-repo
+
+* pomoci `docker volume ls` si zkontrolujte jestli volume jiz nemate vytvorene
+* pokud ne tak volume vytvorte prikazem `docker volume maven-repo`
+
+== Konfigurace v pom.xml
+
+* konfigurace Spring Boot Maven pluginu pro debug
+
+[source, xml]
+<plugin>
+<groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <jvmArguments>
+            -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
+        </jvmArguments>
+    </configuration>
+</plugin>
+
+* pridani zavislosti na Spring devtools (automaticky restart)
+
+[source, xml]
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <optional>true</optional>
+</dependency>
+
+== Konfigurace Docker Compose
+
+Pro vyvoj se pouzivaji dva Docker Compose soubory.
+
+* `docker/docker-compose-compile.yml` - kompilace projektu prostrednictvim `mvn compile` goalu coz ma za nasledek automaticky restart serveru
+* `docker/docker-compose-server.yml` - spusteni aplikace na embedded Tomcatu prostrednictvim `spring-boot:run` goalu, ktery pri detekci zavislosti `spring-boot-devtools` sleduje classpath projektu a pri zmene (compile) restartuje Tomcat
+
+V souborech je potreba provest nasledujici nastaveni:
+
+=== Soubor docker/docker-compose-compile.yml
+
+* volumes podle vaseho prostreni (cesta k projektu a maven repozitari)
+
+=== Soubor docker/docker-compose-server.yml
+
+* volumes podle vaseho prostreni (cesta k projektu a maven repozitari)
+* porty pro debug a tomcat
+* pristupy k DB
+
+== Pouzivani
+
+=== Z prikazove radky
+
+* z adresare `docker` spustte `docker-compose -f docker-compose-server.yml up`
+* po zmene ve zdrojacich spustte z adresare `docker` prikaz pro prekompilovani zdrojaku `docker-compose -f docker-compose-compile.yml up`
+
+=== V IDEA
+
+* pridejte si novou konfiguraci `Docker/docker-compose`
+* pojmenujte napriklad `docker-compile` a do polozky `Compose file(s)` zadejte cestu k souboru `docker/docker-compose-compile.yml`
+* obdobne vytvorte `docker-server` s compose souborem `docker/docker-compose-server.yml`
+* pridejte si novou konfiguraci `Remote`
+* pojmenujte napriklad `docker-debug` a nastavte stejny port jako v `docker/docker-compose-server.yml`
+* spustte konfiguraci `docker-server`
+* po zmene zdrojovych souboru spuste konfiguraci `docker-compile`
+* pro debugovani musi byt spustena konfigurace `docker-server` a navic spustite konfiguraci `docker-debug`
+

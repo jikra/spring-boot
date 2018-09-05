@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  mvn-compile:
+    image: clv-maven-nexus:3.5.4
+    container_name: mvn-compile
+    volumes:
+      - "maven-repo:/var/repo"
+      - "../:/var/project"
+    command: ["compile"]
+volumes:
+  maven-repo:
+    external: true
