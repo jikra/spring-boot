@@ -10,7 +10,6 @@ public class UserController {
     public String getUsers() {
 
         return "TODO: Seznam uzivatelu";
-//        throw new RuntimeException("Oooops!!!");
     }
 
 }

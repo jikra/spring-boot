@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  mvn-runner:
+    image: clv-maven:3.5.4
+    container_name: clv-maven_3.5.4
+    volumes:
+      - "maven-local:/var/maven"
+      - "../:/var/project"
+    command: ${MVN_GOAL}
+volumes:
+  maven-local:
+    external: true
