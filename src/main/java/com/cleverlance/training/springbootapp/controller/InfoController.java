@@ -19,6 +19,7 @@ public class InfoController {
     public InfoController(AppProperty appProperty, DbProperty dbProperty) {
         this.appProperty = appProperty;
         this.dbProperty = dbProperty;
+        System.out.println("foo");
     }
 
     @GetMapping("/info")
