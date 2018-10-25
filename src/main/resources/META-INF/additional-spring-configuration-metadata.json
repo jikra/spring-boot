@@ -1,0 +1,29 @@
+{
+  "hints": [
+    {
+      "name": "app.description",
+      "values": [
+        {
+          "value": "Common description",
+          "description": "For lazy developers."
+        },
+        {
+          "value": "Bla Bla",
+          "description": "For laziest developers."
+        }
+      ]
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.cleverlance.training.springbootapp.property.AppProperty",
+      "name": "app.description",
+      "description": "Description from properties file."
+    },
+    {
+      "name": "environment",
+      "type": "java.lang.String",
+      "description": "Description for environment."
+    }
+  ]
+}

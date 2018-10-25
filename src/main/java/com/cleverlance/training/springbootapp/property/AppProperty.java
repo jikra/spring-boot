@@ -13,8 +13,15 @@ import java.time.format.DateTimeFormatter;
 @ConfigurationProperties(prefix = "app")
 public class AppProperty {
 
-    private String name;
+    /**
+     * Application name.
+     */
+    private String name = "My app";
+    /**
+     * Description from class.
+     */
     private String description;
+    private ApplicationTypeOption type = ApplicationTypeOption.CONSOLE_APP;
     private String version;
     private String buildTime;
 
@@ -48,5 +55,15 @@ public class AppProperty {
 
     public String getBuildTime() {
         return buildTime;
+    }
+
+    public ApplicationTypeOption getType() {
+
+        return type;
+    }
+
+    public void setType(ApplicationTypeOption type) {
+
+        this.type = type;
     }
 }
