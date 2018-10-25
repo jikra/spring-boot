@@ -1,5 +1,6 @@
 package com.cleverlance.training.springbootapp.config;
 
+import com.cleverlance.training.springbootapp.SpringBootApp;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
