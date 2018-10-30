@@ -4,10 +4,12 @@ import com.cleverlance.training.springbootapp.property.AppProperty;
 import com.cleverlance.training.springbootapp.property.DbProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class InfoController {
 
     private final AppProperty appProperty;
@@ -22,10 +24,15 @@ public class InfoController {
     }
 
     @GetMapping("/info")
-    public String getUsers() {
+    public String getInfo(Model model) {
 
-        return "app " + appProperty.getName() + ":" + appProperty.getVersion() + " was build: " + appProperty.getBuildTime() + "\n"
-                + "Run in: [" + environment + "] environment.\n"
-                + "Uses db on url:" + dbProperty.getUrl();
+        model.addAttribute("appName", appProperty.getName());
+        model.addAttribute("appVersion", appProperty.getVersion());
+        model.addAttribute("appBuildTime", appProperty.getBuildTime());
+
+        model.addAttribute("environment", environment);
+
+        model.addAttribute("dbUrl", dbProperty.getUrl());
+        return "info/info";
     }
 }

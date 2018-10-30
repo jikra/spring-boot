@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>App info</title>
+</head>
+<body>
+<ul>
+    <li>Application info: <span th:text="${appName + ':' + appVersion + ' was build ' + appBuildTime}">app:version build time</span></li>
+    <li>Environment: <span th:text="${environment}">default</span></li>
+    <li>DB URL: <span th:text="${dbUrl}">no URL</span></li>
+</ul>
+</body>
+</html>
